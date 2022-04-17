@@ -18,14 +18,14 @@ fi
 # Download the wix tools!
 if [ ! -d wixbin ];
 then
-  curl -LO https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip
-  if [ `md5sum wix311-binaries.zip | cut -f 1 -d " "` != "47a506f8ab6666ee3cc502fb07d0ee2a" ];
+  curl -LO https://wixtoolset.org/downloads/v3.14.0.3910/wix314-binaries.zip
+  if [ `md5sum wix314-binaries.zip | cut -f 1 -d " "` != "34f655cf108086838dd5a76d4318063b" ];
   then
     echo "wix package didn't match expected checksum"
     exit 1
   fi
   mkdir -p wixbin
-  unzip -o wix311-binaries.zip -d wixbin || (
+  unzip -o wix314-binaries.zip -d wixbin || (
     echo "failed to unzip WiX"
     exit 1
   )
