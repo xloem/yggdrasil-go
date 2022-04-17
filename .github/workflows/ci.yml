@@ -143,5 +143,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: debian-packages
-          path: *.deb
+          name: debian-package-${{ matrix.pkgarch }}
+          path: "*.deb"
+          if-no-files-found: error
