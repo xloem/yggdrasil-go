@@ -232,5 +232,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Router package (${{ matrix.pkgarch }})
-          path: "*.deb"
+          path: "/home/runner/work/yggdrasil-go/yggdrasil-go/vyatta-yggdrasil/*.deb"
           if-no-files-found: error
