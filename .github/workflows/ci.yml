@@ -210,11 +210,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: neilalexander/vyatta-yggdrasil
+          fetch-depth: 0
 
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          repository: neilalexander/vyatta-yggdrasil
           path: ${{ env.RUNNER_TEMP }}
 
       - name: Set up Go
@@ -224,8 +224,8 @@ jobs:
 
       - name: Build package
         env:
-          BUILDDIR_YGG: ${{ env.RUNNER_TEMP }}
-        run: ./build-${{ matrix.pkgarch }}
+          BUILDDIR_YGG: ${{ env.GITHUB_WORKSPACE }}
+        run: cd ${{ env.RUNNER_TEMP }} && ./build-${{ matrix.pkgarch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
