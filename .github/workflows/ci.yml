@@ -6,9 +6,6 @@ on:
   release:
   workflow_dispatch:
 
-env:
-  LATEST_GO: "1.18"
-
 jobs:
   lint:
     name: Lint
@@ -16,7 +13,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v3
         with:
-          go-version: ${{ env.LATEST_GO }}
+          go-version: 1.18
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -27,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "${{ env.LATEST_GO }}"]
+        goversion: ["1.17", "1.18"]
 
     name: Build & Test (Linux, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -51,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "${{ env.LATEST_GO }}"]
+        goversion: ["1.17", "1.18"]
 
     name: Build & Test (Windows, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -75,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "${{ env.LATEST_GO }}"]
+        goversion: ["1.17", "1.18"]
 
     name: Build & Test (macOS, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -122,7 +119,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: ${{ env.LATEST_GO }}
+          go-version: 1.18
 
       - name: Build package
         env:
@@ -152,7 +149,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: ${{ env.LATEST_GO }}
+          go-version: 1.18
 
       - name: Build package
         env:
@@ -182,7 +179,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: ${{ env.LATEST_GO }}
+          go-version: 1.18
 
       - name: Build package
         run: sh contrib/msi/build-msi.sh ${{ matrix.pkgarch }}
