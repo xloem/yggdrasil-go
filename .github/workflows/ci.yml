@@ -225,8 +225,8 @@ jobs:
 
       - name: Build package
         env:
-          BUILDDIR_YGG: /home/runner/work/yggdrasil
-        run: cd /home/runner/work/vyatta-yggdrasil && ./build-${{ matrix.pkgarch }}
+          BUILDDIR_YGG: /home/runner/work/yggdrasil-go/yggdrasil-go/yggdrasil
+        run: cd /home/runner/work/yggdrasil-go/yggdrasil-go/vyatta-yggdrasil && ./build-${{ matrix.pkgarch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
