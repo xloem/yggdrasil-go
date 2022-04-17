@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # This script generates an MSI file for Yggdrasil for a given architecture. It
-# needs to run on Windows within MSYS2 and Go 1.13 or later must be installed on
-# the system and within the PATH. This is ran currently by Appveyor (see
-# appveyor.yml in the repository root) for both x86 and x64.
+# needs to run on Windows within MSYS2 and Go 1.17 or later must be installed on
+# the system and within the PATH. This is ran currently by GitHub Actions (see
+# the workflows in the repository).
 #
 # Author: Neil Alexander <neilalexander@users.noreply.github.com>
 
@@ -11,21 +11,17 @@
 PKGARCH=$1
 if [ "${PKGARCH}" == "" ];
 then
-  echo "tell me the architecture: x86, x64 or arm"
+  echo "tell me the architecture: x86, x64, arm or arm64"
   exit 1
 fi
 
 # Get the rest of the repository history. This is needed within Appveyor because
 # otherwise we don't get all of the branch histories and therefore the semver
 # scripts don't work properly.
-if [ "${APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH}" != "" ];
+if [ "${GITHUB_REF_NAME}" != "" ];
 then
   git fetch --all
-#  git checkout ${APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH}
-elif [ "${APPVEYOR_REPO_BRANCH}" != "" ];
-then
-  git fetch --all
-  git checkout ${APPVEYOR_REPO_BRANCH}
+  git checkout ${GITHUB_REF_NAME}
 fi
 
 # Install prerequisites within MSYS2
@@ -69,7 +65,7 @@ EOF
 PKGNAME=$(sh contrib/semver/name.sh)
 PKGVERSION=$(sh contrib/msi/msversion.sh --bare)
 PKGVERSIONMS=$(echo $PKGVERSION | tr - .)
-[ "${PKGARCH}" == "x64" ] && \
+([ "${PKGARCH}" == "x64" ] || [ "${PKGARCH}" == "arm64" ]) && \
   PKGGUID="77757838-1a23-40a5-a720-c3b43e0260cc" PKGINSTFOLDER="ProgramFiles64Folder" || \
   PKGGUID="54a3294e-a441-4322-aefb-3bb40dd022bb" PKGINSTFOLDER="ProgramFilesFolder"
 
@@ -85,8 +81,8 @@ elif [ $PKGARCH = "x86" ]; then
   PKGWINTUNDLL=wintun/bin/x86/wintun.dll
 elif [ $PKGARCH = "arm" ]; then
   PKGWINTUNDLL=wintun/bin/arm/wintun.dll
-#elif [ $PKGARCH = "arm64" ]; then
-#  PKGWINTUNDLL=wintun/bin/arm64/wintun.dll
+elif [ $PKGARCH = "arm64" ]; then
+  PKGWINTUNDLL=wintun/bin/arm64/wintun.dll
 else
   echo "wasn't sure which architecture to get wintun for"
   exit 1
