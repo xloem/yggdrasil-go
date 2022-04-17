@@ -6,6 +6,9 @@ on:
   release:
   workflow_dispatch:
 
+env:
+  LATEST_GO: "1.18"
+
 jobs:
   lint:
     name: Lint
@@ -13,7 +16,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: ${{ env.LATEST_GO }}
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -24,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "1.18"]
+        goversion: ["1.17", "${{ env.LATEST_GO }}"]
 
     name: Build & Test (Linux, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -48,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "1.18"]
+        goversion: ["1.17", "${{ env.LATEST_GO }}"]
 
     name: Build & Test (Windows, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -72,7 +75,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        goversion: ["1.17", "1.18"]
+        goversion: ["1.17", "${{ env.LATEST_GO }}"]
 
     name: Build & Test (macOS, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -109,7 +112,7 @@ jobs:
       matrix:
         pkgarch: ["amd64", "i386", "mips", "mipsel", "armhf", "armel", "arm64"]
 
-    name: Package (Debian ${{ matrix.pkgarch }})
+    name: Create Package (Debian, ${{ matrix.pkgarch }})
     needs: [tests-ok]
 
     runs-on: ubuntu-latest
@@ -119,7 +122,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: ${{ env.LATEST_GO }}
 
       - name: Build package
         env:
@@ -139,7 +142,7 @@ jobs:
       matrix:
         pkgarch: ["amd64", "arm64"]
 
-    name: Package (macOS ${{ matrix.pkgarch }})
+    name: Create Package (macOS, ${{ matrix.pkgarch }})
     needs: [tests-ok]
 
     runs-on: macos-latest
@@ -149,7 +152,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: ${{ env.LATEST_GO }}
 
       - name: Build package
         env:
@@ -169,7 +172,7 @@ jobs:
       matrix:
         pkgarch: ["x64", "x86", "arm", "arm64"]
 
-    name: Package (Windows ${{ matrix.pkgarch }})
+    name: Create Package (Windows, ${{ matrix.pkgarch }})
     needs: [tests-ok]
 
     runs-on: windows-latest
@@ -179,16 +182,14 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: ${{ env.LATEST_GO }}
 
       - name: Build package
-        env:
-          PKGARCH: ${{ matrix.pkgarch }}
-        run: sh contrib/msi/build-msi.sh
+        run: sh contrib/msi/build-msi.sh ${{ matrix.pkgarch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Windows MSI (${{ matrix.pkgarch }})
+          name: Windows package (${{ matrix.pkgarch }})
           path: "*.msi"
           if-no-files-found: error
