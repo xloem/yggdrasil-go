@@ -15,18 +15,6 @@ then
   exit 1
 fi
 
-# Get the rest of the repository history. This is needed within Appveyor because
-# otherwise we don't get all of the branch histories and therefore the semver
-# scripts don't work properly.
-if [ "${GITHUB_REF_NAME}" != "" ];
-then
-  git fetch --all
-  git checkout ${GITHUB_REF_NAME}
-fi
-
-# Install prerequisites within MSYS2
-pacman -S --needed --noconfirm unzip git curl
-
 # Download the wix tools!
 if [ ! -d wixbin ];
 then
