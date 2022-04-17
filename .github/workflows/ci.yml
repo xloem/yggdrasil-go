@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         goversion: ["1.17", "1.18"]
-        goarch: ["amd64", "386", "arm64", "armel", "armhf", "mips", "mipsle"]
+        goarch: ["amd64", "386", "arm64", "arm", "mips", "mipsle"]
 
     name: Build & Test (Linux ${{ matrix.goarch }}, Go ${{ matrix.goversion }})
     needs: [lint]
@@ -116,3 +116,32 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
+  build-packages:
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgarch: ["amd64", "i386", "mips", "mipsel", "armhf", "armel", "arm64"]
+
+    name: Build Debian packages
+    needs: [tests-ok]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.goversion }}
+
+      - name: Build Yggdrasil
+        env:
+          PKGARCH: ${{ matrix.pkgarch }}
+        run: sh contrib/deb/generate.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: debian-packages
+          path: *.deb
