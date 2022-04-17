@@ -211,7 +211,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: neilalexander/vyatta-yggdrasil
-          path: main
 
       - uses: actions/checkout@v3
         with:
