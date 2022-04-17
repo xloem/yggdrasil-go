@@ -102,3 +102,93 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
+  build-packages-debian:
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgarch: ["amd64", "i386", "mips", "mipsel", "armhf", "armel", "arm64"]
+
+    name: Package (Debian ${{ matrix.pkgarch }})
+    needs: [tests-ok]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Build package
+        env:
+          PKGARCH: ${{ matrix.pkgarch }}
+        run: sh contrib/deb/generate.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Debian package (${{ matrix.pkgarch }})
+          path: "*.deb"
+          if-no-files-found: error
+
+  build-packages-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgarch: ["amd64", "arm64"]
+
+    name: Package (macOS ${{ matrix.pkgarch }})
+    needs: [tests-ok]
+
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Build package
+        env:
+          PKGARCH: ${{ matrix.pkgarch }}
+        run: sh contrib/macos/create-pkg.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macOS package (${{ matrix.pkgarch }})
+          path: "*.pkg"
+          if-no-files-found: error
+
+  build-packages-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgarch: ["x64", "x86", "arm", "arm64"]
+
+    name: Package (Windows ${{ matrix.pkgarch }})
+    needs: [tests-ok]
+
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Build package
+        env:
+          PKGARCH: ${{ matrix.pkgarch }}
+        run: sh contrib/msi/build-msi.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows MSI (${{ matrix.pkgarch }})
+          path: "*.msi"
+          if-no-files-found: error
