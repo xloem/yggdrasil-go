@@ -215,7 +215,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          path: yggdrasil
+          path: ${{ env.RUNNER_TEMP }}
 
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -224,7 +224,7 @@ jobs:
 
       - name: Build package
         env:
-          BUILDDIR_YGG: ./yggdrasil
+          BUILDDIR_YGG: ${{ env.RUNNER_TEMP }}
         run: ./build-${{ matrix.pkgarch }}
 
       - name: Upload artifacts
