@@ -45,7 +45,7 @@ jobs:
       matrix:
         goversion: ["1.16", "1.17", "1.18"]
   
-    name: Build & Test (Windows, Go {{ matrix.goversion }})
+    name: Build & Test (Windows, Go ${{ matrix.goversion }})
     needs: [lint]
         
     runs-on: windows-latest
@@ -69,7 +69,7 @@ jobs:
       matrix:
         goversion: ["1.16", "1.17", "1.18"]
   
-    name: Build & Test (macOS, Go {{ matrix.goversion }})
+    name: Build & Test (macOS, Go ${{ matrix.goversion }})
     needs: [lint]
         
     runs-on: macos-latest
