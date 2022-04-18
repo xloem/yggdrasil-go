@@ -138,7 +138,7 @@ jobs:
 
     name: Create Package (Debian, ${{ matrix.pkgarch }})
     needs: [tests-ok]
-    if: contains(["master", "develop", "future"], github.ref)
+    if: contains(fromJson('["master", "develop", "future"]'), github.ref)
 
     runs-on: ubuntu-latest
     steps:
@@ -171,7 +171,7 @@ jobs:
 
     name: Create Package (macOS, ${{ matrix.pkgarch }})
     needs: [tests-ok]
-    if: contains(["master", "develop", "future"], github.ref)
+    if: contains(fromJson('["master", "develop", "future"]'), github.ref)
 
     runs-on: macos-latest
     steps:
@@ -204,7 +204,7 @@ jobs:
 
     name: Create Package (Windows, ${{ matrix.pkgarch }})
     needs: [tests-ok]
-    if: contains(["master", "develop", "future"], github.ref)
+    if: contains(fromJson('["master", "develop", "future"]'), github.ref)
 
     runs-on: windows-latest
     steps:
@@ -235,7 +235,7 @@ jobs:
 
     name: Create Package (Router, ${{ matrix.pkgarch }})
     needs: [tests-ok]
-    if: contains(["master", "develop", "future"], github.ref)
+    if: contains(fromJson('["master", "develop", "future"]'), github.ref)
 
     runs-on: ubuntu-latest
     steps:
